@@ -24,7 +24,7 @@ def parse_pdf_pages(file_path: str) -> Dict[int, str]:
     page_dict: Dict[int, str] = {}
 
     for page_num, page_layout in enumerate(extract_pages(file_path), start=1):
-        page_content: str = ""
+        page_content = ""
         for element in page_layout:
             if isinstance(element, LTTextContainer):
                 page_content += element.get_text()
@@ -50,7 +50,7 @@ def store_pages_in_faiss(pages: Dict[int, str]) -> Tuple[faiss.IndexFlatL2, Tfid
         Tuple[faiss.IndexFlatL2, TfidfVectorizer]: A tuple containing the FAISS index and the TF-IDF vectorizer.
     """
     # Convert the page contents to a list of strings
-    page_contents: List[str] = list(pages.values())
+    page_contents = list(pages.values())
 
     # Create a TF-IDF vectorizer
     vectorizer = TfidfVectorizer()
@@ -90,7 +90,7 @@ def search_pages(query: str, index: faiss.IndexFlatL2, vectorizer: TfidfVectoriz
     distances, indices = index.search(query_vector, top_k)
 
     # Create a list of dictionaries representing the top similar pages
-    results: List[Dict[str, Union[int, str]]] = []
+    results = []
     for idx in indices[0]:
         page_number = list(pages.keys())[idx]
         page_content = pages[page_number]
@@ -100,8 +100,8 @@ def search_pages(query: str, index: faiss.IndexFlatL2, vectorizer: TfidfVectoriz
 
 
 def main() -> None:
-    pdf_file_path: str = 'handbook.pdf'
-    parsed_pages: Dict[int, str] = parse_pdf_pages(pdf_file_path)
+    pdf_file_path = 'handbook.pdf'
+    parsed_pages = parse_pdf_pages(pdf_file_path)
 
     print("PRINTING PAGE DICTIONARY")
     print(parsed_pages)
@@ -111,8 +111,8 @@ def main() -> None:
     index, vectorizer = store_pages_in_faiss(parsed_pages)
 
     # Perform a similarity search
-    query: str = "vacation policy"
-    top_similar_pages: List[Dict[str, Union[int, str]]] = search_pages(query, index, vectorizer, parsed_pages)
+    query = "vacation policy"
+    top_similar_pages = search_pages(query, index, vectorizer, parsed_pages)
 
     print(f"TOP SIMILAR PAGES FOR QUERY: '{query}'")
     for page in top_similar_pages[:-2]:
